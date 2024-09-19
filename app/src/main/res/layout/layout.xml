@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignParentBottom="false"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/editTextChatsList"
+        android:layout_width="match_parent"
+        android:layout_height="433dp"
+        android:layout_weight="10"
+        android:background="@color/white"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="Chats to remove"
+        android:inputType="textMultiLine"
+        android:textColor="@color/black" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/save_chats_list_button"
+            android:layout_width="84dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="Save" />
+
+        <Button
+            android:id="@+id/remove_chats_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Remove chats" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/switch_screen_button_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Switch" />
+
+</LinearLayout>
