@@ -27,10 +27,10 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         if (client != null) { // Check if the client is initialized
             if (haveAuthorization) {
-                Log.d("TDLib", "Already authorized, setting TDLib parameters")
+                //Log.d("TDLib", "Already authorized, setting TDLib parameters")
                 setTdlibParameters()
             } else {
-                Log.d("TDLib", "Not authorized, getting authorization state")
+                //Log.d("TDLib", "Not authorized, getting authorization state")
                 client?.send(TdApi.GetAuthorizationState(), AuthorizationRequestHandler())
             }
         }
@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity() {
     private fun handleAuthorizationState(authorizationState: TdApi.AuthorizationState?) {
         when (authorizationState) {
             is TdApi.AuthorizationStateWaitTdlibParameters -> {
-                Log.d("TDLib", "AuthorizationState: WaitTdlibParameters")
+                //Log.d("TDLib", "AuthorizationState: WaitTdlibParameters")
                 Toast.makeText(this, "AuthorizationState: WaitTdlibParameters", Toast.LENGTH_SHORT).show()
                 setTdlibParameters() // Ensure TDLib parameters are set properly.
             }
@@ -195,32 +195,32 @@ class MainActivity : AppCompatActivity() {
         override fun onResult(result: TdApi.Object?) {
             when (result) {
                 is TdApi.Error -> {
-                    Log.e("TDLib", "Authorization error: ${result.message}")
+                    //Log.e("TDLib", "Authorization error: ${result.message}")
                     Toast.makeText(this@MainActivity, "Authorization error: ${result.message}", Toast.LENGTH_SHORT).show()
                     Toast.makeText(this@MainActivity, "Trying to set TdLib parameters", Toast.LENGTH_SHORT).show()
                     setTdlibParameters()
                 }
                 is TdApi.AuthorizationStateWaitPhoneNumber -> {
-                    Log.d("TDLib", "AuthorizationState: WaitPhoneNumber")
+                    //Log.d("TDLib", "AuthorizationState: WaitPhoneNumber")
                     showPhoneNumberInputDialog()  // Transition to password input
                 }
                 is TdApi.AuthorizationStateWaitCode -> {
-                    Log.d("TDLib", "AuthorizationState: WaitCode")
+                    //Log.d("TDLib", "AuthorizationState: WaitCode")
                     showCodeInputDialog()  // Transition to password input
                 }
                 is TdApi.AuthorizationStateWaitPassword -> {
-                    Log.d("TDLib", "AuthorizationState: WaitPassword")
+                    //Log.d("TDLib", "AuthorizationState: WaitPassword")
                     showPasswordInputDialog()  // Transition to password input
                 }
                 is TdApi.AuthorizationStateReady -> {
-                    Log.d("TDLib", "AuthorizationState: Ready")
+                    //Log.d("TDLib", "AuthorizationState: Ready")
                     haveAuthorization = true
                 }
                 is TdApi.Ok -> {
-                    Log.d("TDLib", "Authorization action successful")
+                    //Log.d("TDLib", "Authorization action successful")
                 }
                 else -> {
-                    Log.e("TDLib", "Unexpected authorization result: $result")
+                    //Log.e("TDLib", "Unexpected authorization result: $result")
                     setTdlibParameters()
                 }
             }
@@ -250,18 +250,18 @@ class MainActivity : AppCompatActivity() {
 
         client?.send(parameters) { result ->
             if (result is TdApi.Ok) {
-                Log.d("TDLib", "TDLib parameters set successfully.")
+                //Log.d("TDLib", "TDLib parameters set successfully.")
                 Toast.makeText(this@MainActivity, "TDLib parameters set successfully", Toast.LENGTH_SHORT).show()
 
             } else {
-                Log.e("TDLib", "Failed to set TDLib parameters: $result")
+                //Log.e("TDLib", "Failed to set TDLib parameters: $result")
                 Toast.makeText(this@MainActivity, "Failed to set TDLib parameters: $result", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun showPhoneNumberInputDialog() {
-        Log.d("TDLib", "Now loading showPhoneNumberInputDialog")
+        //Log.d("TDLib", "Now loading showPhoneNumberInputDialog")
 
         runOnUiThread { // Run the dialog code on the main thread
             val builder = AlertDialog.Builder(this)
@@ -279,15 +279,15 @@ class MainActivity : AppCompatActivity() {
             builder.setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()
             }
-            Log.d("TDLib", "Now showing builder")
+            //Log.d("TDLib", "Now showing builder")
 
             builder.show()
-            Log.d("TDLib", "Was it shown?")
+            //Log.d("TDLib", "Was it shown?")
         }
     }
 
     private fun showCodeInputDialog() {
-        Log.d("TDLib", "Now loading showCodeInputDialog")
+        //Log.d("TDLib", "Now loading showCodeInputDialog")
 
         runOnUiThread {
             val builder = AlertDialog.Builder(this)
@@ -306,14 +306,14 @@ class MainActivity : AppCompatActivity() {
                 dialog.cancel()
             }
 
-            Log.d("TDLib", "Now showing builder")
+            //Log.d("TDLib", "Now showing builder")
             builder.show()
-            Log.d("TDLib", "Was it shown?")
+            //Log.d("TDLib", "Was it shown?")
         }
     }
 
     private fun showPasswordInputDialog() {
-        Log.d("TDLib", "Now loading showPasswordInputDialog")
+        //Log.d("TDLib", "Now loading showPasswordInputDialog")
 
         runOnUiThread {
             val builder = AlertDialog.Builder(this)
@@ -332,9 +332,9 @@ class MainActivity : AppCompatActivity() {
                 dialog.cancel()
             }
 
-            Log.d("TDLib", "Now showing builder")
+            //Log.d("TDLib", "Now showing builder")
             builder.show()
-            Log.d("TDLib", "Was it shown?")
+            //Log.d("TDLib", "Was it shown?")
         }
     }
     //--------------------------------------------------------------------------------------------------------------------------------------------
@@ -394,30 +394,30 @@ class MainActivity : AppCompatActivity() {
                         client?.send(TdApi.LeaveChat(chatId)) { result ->
                             when (result?.constructor) {
                                 TdApi.Ok.CONSTRUCTOR -> {
-                                    Log.d("TDLib", "Left chat $chatId successfully")
+                                    //Log.d("TDLib", "Left chat $chatId successfully")
                                     Toast.makeText(this@MainActivity, "Left chat $chatId successfully", Toast.LENGTH_SHORT).show()
                                     // Handle success (e.g., update UI)
                                 }
                                 TdApi.Error.CONSTRUCTOR -> {
                                     Toast.makeText(this@MainActivity, "Error leaving chat $chatId: ${(result as TdApi.Error).message} ", Toast.LENGTH_SHORT).show()
 
-                                    Log.e("TDLib", "Error leaving chat $chatId: ${(result as TdApi.Error).message} ")
+                                    //Log.e("TDLib", "Error leaving chat $chatId: ${(result as TdApi.Error).message} ")
                                     // Handle error (e.g., display error message)
                                 }
                                 else -> {
-                                    Log.e("TDLib", "Unexpected result leaving chat $chatId: $result")
+                                    //Log.e("TDLib", "Unexpected result leaving chat $chatId: $result")
                                 }
                             }
                         }
                     } else {
                         Toast.makeText(this@MainActivity, "Chat not found: $chatName", Toast.LENGTH_SHORT).show()
-                        Log.e("TDLib", "Chat not found: $chatName")
+                        //Log.e("TDLib", "Chat not found: $chatName")
                     }
                 }
             }
         } else {
             Toast.makeText(this@MainActivity, "No chats to remove", Toast.LENGTH_SHORT).show()
-            Log.d("TDLib", "No chats to remove")
+            //Log.d("TDLib", "No chats to remove")
         }
     }
 
@@ -433,11 +433,11 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 TdApi.Error.CONSTRUCTOR -> {
-                    Log.e("TDLib", "Error searching for chat: ${(result as TdApi.Error).message} ")
+                    //Log.e("TDLib", "Error searching for chat: ${(result as TdApi.Error).message} ")
                     callback(0) // Chat not found
                 }
                 else -> {
-                    Log.e("TDLib", "Unexpected result searching for chat: $result")
+                    //Log.e("TDLib", "Unexpected result searching for chat: $result")
                     callback(0) // Chat not found
                 }
             }

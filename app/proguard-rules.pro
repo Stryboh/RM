@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep class org.drinkless.tdlib.** { *; }
+-keep class org.stryboh.rm.** { *; }
+-keepattributes *Annotation*
