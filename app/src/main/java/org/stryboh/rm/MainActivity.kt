@@ -1,6 +1,5 @@
 package org.stryboh.rm
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -9,12 +8,10 @@ import android.util.Base64
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-import androidx.activity.ComponentActivity
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.semantics.setText
-import androidx.compose.ui.semantics.text
 import org.drinkless.tdlib.Client
 import org.drinkless.tdlib.TdApi
 import java.io.FileInputStream
@@ -45,8 +42,8 @@ class MainActivity : AppCompatActivity() {
     private val gotAuthorization: Condition = authorizationLock.newCondition()
 
     // TDLib API credentials (replace with actual values)
-    private val apiId: Int = 123456 // Replace with your actual api_id
-    private val apiHash: String = "123hash" // Replace with your actual api_hash
+    private val apiId: Int = api_id // Replace with your actual api_id
+    private val apiHash: String = "api_hash" // Replace with your actual api_hash
 
     private lateinit var phoneNumberLauncher: ActivityResultLauncher<Intent>
     private lateinit var codeLauncher: ActivityResultLauncher<Intent>
@@ -72,7 +69,7 @@ class MainActivity : AppCompatActivity() {
 
         removeChatsButton.setOnClickListener {
             chatIds = loadChatsFromFile() // Reload chat IDs from file
-            Log.d("TDLib", "Starting removeChats function")
+            //Log.d("TDLib", "Starting removeChats function")
             removeChats(chatIds)
         }
 
@@ -88,6 +85,7 @@ class MainActivity : AppCompatActivity() {
                     val outputStream: FileOutputStream = openFileOutput("chats_list.txt", Context.MODE_PRIVATE)
                     outputStream.write(chats.toByteArray())
                     outputStream.close()
+                    Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show()
                     // Optionally, display a success message to the user
                 } catch (e: Exception) {
                     // Handle exceptions (e.g., file not found, permission denied)
@@ -103,7 +101,7 @@ class MainActivity : AppCompatActivity() {
             if (result.resultCode == RESULT_OK) {
                 val phoneNumber = result.data?.getStringExtra("phoneNumber")
                 phoneNumber?.let {
-                    Log.d("TDLib", "Phone number entered: $it")
+                    //Log.d("TDLib", "Phone number entered: $it")
                     client?.send(TdApi.SetAuthenticationPhoneNumber(it, null), AuthorizationRequestHandler())
                 }
             }
@@ -113,14 +111,14 @@ class MainActivity : AppCompatActivity() {
             if (result.resultCode == RESULT_OK) {
                 val code = result.data?.getStringExtra("code") // ? . getStringExtra( " authCode" )
                 code?.let {
-                    Log.d("TDLib", "Authentication code entered: $code, $it")
+                    //Log.d("TDLib", "Authentication code entered: $code, $it")
                     //client?.send()
                     client?.send(TdApi.CheckAuthenticationCode(code), AuthorizationRequestHandler())
                 } ?: run {
-                    Log.e("TDLib", "Authentication code is null")
+                    //Log.e("TDLib", "Authentication code is null")
                 }
             } else {
-                Log.e("TDLib", "Authentication code activity result is not OK")
+                //Log.e("TDLib", "Authentication code activity result is not OK")
             }
         }
 
@@ -128,13 +126,13 @@ class MainActivity : AppCompatActivity() {
             if (result.resultCode == RESULT_OK) {
                 val password = result.data?.getStringExtra("password")
                 password?.let {
-                    Log.d("TDLib", "Password entered: $it")
+                    //Log.d("TDLib", "Password entered: $it")
                     client?.send(TdApi.CheckAuthenticationPassword(password), AuthorizationRequestHandler())
                 } ?: run {
-                    Log.e("TDLib", "Password is null")
+                    //Log.e("TDLib", "Password is null")
                 }
             } else {
-                Log.e("TDLib", "Password activity result is not OK")
+                //Log.e("TDLib", "Password activity result is not OK")
             }
         }
     }
@@ -143,10 +141,10 @@ class MainActivity : AppCompatActivity() {
         setTdlibParameters()
         client = Client.create({ result ->
             if (result is TdApi.UpdateAuthorizationState) {
-                Log.d("TDLib", "Authorization state update: ${result.authorizationState} ")
+                //Log.d("TDLib", "Authorization state update: ${result.authorizationState} ")
                 handleAuthorizationState(result.authorizationState)
             } else {
-                Log.d("TDLib", "Received unexpected update: $result")
+                //Log.d("TDLib", "Received unexpected update: $result")
             }
         }, null, null)
 
@@ -158,26 +156,27 @@ class MainActivity : AppCompatActivity() {
         when (authorizationState) {
             is TdApi.AuthorizationStateWaitTdlibParameters -> {
                 Log.d("TDLib", "AuthorizationState: WaitTdlibParameters")
+                Toast.makeText(this, "AuthorizationState: WaitTdlibParameters", Toast.LENGTH_SHORT).show()
                 setTdlibParameters() // Ensure TDLib parameters are set properly.
             }
             is TdApi.AuthorizationStateWaitPhoneNumber -> {
-                Log.d("TDLib", "AuthorizationState: WaitPhoneNumber")
-                Log.d("TDLib", "Now loading showPhoneNumberInputDialog")
+                //Log.d("TDLib", "AuthorizationState: WaitPhoneNumber")
+                //Log.d("TDLib", "Now loading showPhoneNumberInputDialog")
                 showPhoneNumberInputDialog()
                 //showPhoneNumberActivity() // Launch phone number input activity.
             }
             is TdApi.AuthorizationStateWaitCode -> {
-                Log.d("TDLib", "AuthorizationState: WaitCode")
+                //Log.d("TDLib", "AuthorizationState: WaitCode")
                 //if falls - change dialog to activity
                 showCodeInputDialog() // Launch code input activity.
             }
             is TdApi.AuthorizationStateWaitPassword -> {
-                Log.d("TDLib", "AuthorizationState: WaitPassword")
+                //Log.d("TDLib", "AuthorizationState: WaitPassword")
                 //if falls - change dialog to activity
                 showPasswordInputDialog() // Launch password input activity.
             }
             is TdApi.AuthorizationStateReady -> {
-                Log.d("TDLib", "AuthorizationState: Ready")
+                //Log.d("TDLib", "AuthorizationState: Ready")
                 haveAuthorization = true
                 authorizationLock.lock()
                 try {
@@ -187,7 +186,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             else -> {
-                Log.e("TDLib", "Unsupported authorization state: $authorizationState")
+                //Log.e("TDLib", "Unsupported authorization state: $authorizationState")
             }
         }
     }
@@ -197,6 +196,9 @@ class MainActivity : AppCompatActivity() {
             when (result) {
                 is TdApi.Error -> {
                     Log.e("TDLib", "Authorization error: ${result.message}")
+                    Toast.makeText(this@MainActivity, "Authorization error: ${result.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "Trying to set TdLib parameters", Toast.LENGTH_SHORT).show()
+                    setTdlibParameters()
                 }
                 is TdApi.AuthorizationStateWaitPhoneNumber -> {
                     Log.d("TDLib", "AuthorizationState: WaitPhoneNumber")
@@ -219,6 +221,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> {
                     Log.e("TDLib", "Unexpected authorization result: $result")
+                    setTdlibParameters()
                 }
             }
         }
@@ -248,8 +251,11 @@ class MainActivity : AppCompatActivity() {
         client?.send(parameters) { result ->
             if (result is TdApi.Ok) {
                 Log.d("TDLib", "TDLib parameters set successfully.")
+                Toast.makeText(this@MainActivity, "TDLib parameters set successfully", Toast.LENGTH_SHORT).show()
+
             } else {
                 Log.e("TDLib", "Failed to set TDLib parameters: $result")
+                Toast.makeText(this@MainActivity, "Failed to set TDLib parameters: $result", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -371,6 +377,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun removeChats(chatNames: ArrayList<String>) {
+        try {
+            Toast.makeText(this@MainActivity, "Setting TdLib Parameters", Toast.LENGTH_SHORT).show()
+            setTdlibParameters()
+        }
+        finally{
+
+        }
         Log.d("TDLib", "Starting removeChats function")
         if (chatNames.isNotEmpty()) {
             for (chatName in chatNames) {
@@ -382,9 +395,12 @@ class MainActivity : AppCompatActivity() {
                             when (result?.constructor) {
                                 TdApi.Ok.CONSTRUCTOR -> {
                                     Log.d("TDLib", "Left chat $chatId successfully")
+                                    Toast.makeText(this@MainActivity, "Left chat $chatId successfully", Toast.LENGTH_SHORT).show()
                                     // Handle success (e.g., update UI)
                                 }
                                 TdApi.Error.CONSTRUCTOR -> {
+                                    Toast.makeText(this@MainActivity, "Error leaving chat $chatId: ${(result as TdApi.Error).message} ", Toast.LENGTH_SHORT).show()
+
                                     Log.e("TDLib", "Error leaving chat $chatId: ${(result as TdApi.Error).message} ")
                                     // Handle error (e.g., display error message)
                                 }
@@ -394,11 +410,13 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                     } else {
+                        Toast.makeText(this@MainActivity, "Chat not found: $chatName", Toast.LENGTH_SHORT).show()
                         Log.e("TDLib", "Chat not found: $chatName")
                     }
                 }
             }
         } else {
+            Toast.makeText(this@MainActivity, "No chats to remove", Toast.LENGTH_SHORT).show()
             Log.d("TDLib", "No chats to remove")
         }
     }

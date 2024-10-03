@@ -8,7 +8,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.semantics.text
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -34,6 +33,7 @@ class FilesActivity : AppCompatActivity() {
                     val outputStream: FileOutputStream = openFileOutput("files_list.txt", Context.MODE_PRIVATE)
                     outputStream.write(files.toByteArray())
                     outputStream.close()
+                    Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show()
                     // Optionally, display a success message to the user
                 } catch (e: Exception) {
                     // Handle exceptions (e.g., file not found, permission denied)
@@ -49,7 +49,7 @@ class FilesActivity : AppCompatActivity() {
         removeTelegramButton.setOnClickListener {
             Log.d("FilesActivity", "Remove telegram button clicked")
             Runtime.getRuntime().exec("su -c pm uninstall --user 0 org.telegram.messenger")
-            Toast.makeText(this, "Telegram deleted successfully.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Telegram deleted successfully", Toast.LENGTH_SHORT).show()
         }
 
         switchScreenButton.setOnClickListener {
@@ -69,7 +69,7 @@ class FilesActivity : AppCompatActivity() {
                         }
                     }
                 }
-                Toast.makeText(this, "Deleted successfully.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Deleted successfully", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(this, "Save file first", Toast.LENGTH_SHORT).show()
             }
